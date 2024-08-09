@@ -8,7 +8,7 @@ The final preprocessed Image dataset available at: https://drive.google.com/driv
 
 # 2. Baselines # 
 
-This folder includes the baseline models developed.
+This folder is including the baseline models developed.
 Three baseline models are:
 
 ## Custom ViT ##
