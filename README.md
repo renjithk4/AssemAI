@@ -3,7 +3,7 @@ This repository contains curated datasets, implementation of methods experimente
 
 # 1. Data Preprocessing #
 
-The final preprocessed Image dataset available at: https://drive.google.com/drive/folders/1VdIsSouurlVAFRLaZnPuemsDXLyKRN-2?usp=drive_link
+The final preprocessed Image dataset(YOLO-FF) available at: https://drive.google.com/drive/folders/1VdIsSouurlVAFRLaZnPuemsDXLyKRN-2?usp=drive_link
 
 
 # 2. Baselines # 
@@ -25,9 +25,9 @@ To run py .Baselines/image_with_segmentation_vit.py
 This folder includes the models for the proposed approach.
 
 ## EfficentNet ##
-To run py .Proposed Fusion Approach/image_with_segmentation_pretrainedcnn.py
+To run py .Proposed Method/image_with_segmentation_pretrainedcnn.py
 
 
 
-# 4. Future Factories Setup #
-This folder includes sample images obtained from the Future Factories(FF) Setup at University of South Carolina, USA
+# 4. Model #
+This folder includes the pretrained efficient-net model pretrained for YOLO-FF dataste.
