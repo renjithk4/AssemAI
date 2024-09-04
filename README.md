@@ -3,9 +3,13 @@ This repository contains derived datasets, implementation of methods experimente
 
 # 1. Data Preprocessing #
 This folder includes the steps for object detection from the images in the Future Factories dataset.
+
 The final preprocessed image dataset available at: https://drive.google.com/drive/folders/1VdIsSouurlVAFRLaZnPuemsDXLyKRN-2?usp=drive_link
+
 To train the YOLO model run, -> py 1. Data Preprocessing/YOLO-FF.py
+
 The folder "YOLO-FF Model for Object Detection", includes the results of the model training.
+
 The YOLO-FF model is saved at "1. Data Preprocessing/YOLO-FF Model for Object Detection/YOLO-FF_train/weights/YOLO-FF.pt"
 
 # 2. Baselines # 
