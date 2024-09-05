@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssemAI - Explanation Dashboard</title>
+    <style>
+        body {
+            background-color: #f4f4f4; /* Light gray background */
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            color: #333; /* Darker text color */
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #333; /* Dark gray background */
+            padding: 30px;
+            color: #f0f0f0; /* Light text color */
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            left: 20px;
+        }
+
+        .logo img {
+            width: 150px;
+            height: auto;
+        }
+
+        .title {
+            font-size: 32px;
+            animation: fadeIn 2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .navigation-bar {
+            background-color: #e0e0e0; /* Light gray */
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navigation-bar a {
+            text-decoration: none;
+            color: #333; /* Dark gray text */
+            font-size: 20px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .navigation-bar a:hover {
+            color: #555; /* Slightly darker gray on hover */
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 30px;
+            color: #333; /* Dark gray */
+            animation: slideDown 1s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            padding: 40px;
+        }
+
+        .instructions-box, .table-box {
+            width: 48%;
+            padding: 20px;
+            background: #ffffff; /* White background for boxes */
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .instructions-box {
+            background-color: #f9f9f9; /* Light gray background */
+        }
+
+        .table-box {
+            background-color: #f4f4f4; /* Very light gray background */
+        }
+
+        .action-button {
+            display: block;
+            margin: 0 auto;
+            background-color: #333; /* Dark gray background */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-button:hover {
+            background-color: #555; /* Slightly lighter gray on hover */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd; /* Light gray border */
+        }
+
+        th {
+            background-color: #e0e0e0; /* Light gray */
+        }
+
+        footer {
+            background-color: #333; /* Dark gray */
+            color: #fff;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 14px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='USClogo.png') }}" alt="USC Logo">
+        </div>
+        <div class="title">AssemAI Dashboard</div>
+    </header>
+
+    <div class="navigation-bar">
+        <a href="AssemAI.html">Home</a>
+        <a href="TSF.html">Prediction</a>
+    </div>
+
+    <h2>Anomaly Explanation Interface</h2>
+
+    <div class="content">
+        <div class="instructions-box">
+            <p><strong>Guide to Use:</strong></p>
+            <p>1) After identifying an anomaly, use this section to explore potential phases where it might have occurred.</p>
+            <p>2) The system will analyze historical data to highlight possible reasons for the anomaly.</p>
+            <p>3) Hit the "Analyze" button below to start the process, and the table will be updated with results.</p>
+            <p>4) Each entry in the table relates to unusual readings detected in a specific cycle stage.</p>
+            <p>5) The sensor and robot details pinpoint the exact source of the abnormal readings.</p>
+            <p>6) The 'Cycle State' and 'Function' columns specify where in the process the anomaly was detected.</p>
+        </div>
+
+        <div class="table-box">
+            <button class="action-button" id="determineCause">Analyze</button>
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>Sensor</th>
+                        <th>Robot</th>
+                        <th>Cycle State</th>
+                        <th>Function</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.getElementById('determineCause').addEventListener('click', function() {
+            fetch('http://127.0.0.1:5000/RootCause')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#data-table tbody');
+                    tableBody.innerHTML = ''; // Clear previous content
+
+                    data.forEach(item => {
+                        const row = tableBody.insertRow();
+                        row.insertCell(0).textContent = item.anomalous_sensor_variables;
+                        row.insertCell(1).textContent = item.robot_names;
+                        row.insertCell(2).textContent = item.cycle_state;
+                        row.insertCell(3).textContent = item.cycle_function;
+                    });
+                })
+                .catch(error => console.error('Error fetching root cause:', error));
+        });
+    </script>
+
+    <footer>
+        <p>&copy; 2024 AssemAI</p>
+    </footer>
+</body>
+</html>

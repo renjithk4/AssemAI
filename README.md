@@ -33,3 +33,7 @@ This folder includes the models for the proposed approach.
 ## EfficentNet ##
 To run py .3. Proposed Anomaly Detection Model/image_with_segmentation_pretrainedcnn.py
 The best model is saved at "3. Proposed Anomaly Detection Model/efficientnet_model.pth"
+
+# 4. AssemAI Interface #
+
+This folder includes the codes and supplementary files on model deployment.

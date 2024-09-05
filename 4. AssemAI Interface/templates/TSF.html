@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssemAI : Anomaly Detection Dashboard</title>
+    <style>
+        body {
+            background-color: #e8ecef; /* Light background for a clean look */
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            color: #2c3e50; /* Darker text color for better readability */
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #333; /* Dark gray for header background */
+            padding: 20px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        h1 {
+            font-size: 30px;
+            text-align: center;
+            margin: 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .burgundy-bar {
+            height: 50px;
+            background-color: #333; /* Dark gray for the bar background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .burgundy-bar button {
+            background-color: #333; /* Dark gray button background */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 0 20px;
+        }
+
+        .burgundy-bar button:hover {
+            background-color: #444; /* Slightly lighter gray on hover */
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 34px;
+            color: #333; /* Dark gray for heading */
+        }
+
+        .main-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .image-container {
+            width: 40%;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+            text-align: center;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .result-container {
+            width: 40%;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-text,
+        .anomaly-type {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .buttons-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #startAnalyzing,
+        #stopAnalyzing {
+            background-color: #333; /* Dark gray for buttons */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 20px;
+            border-radius: 8px;
+            margin: 0 15px;
+        }
+
+        #startAnalyzing[disabled],
+        #stopAnalyzing[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        footer {
+            background-color: #333; /* Dark gray for footer */
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='USClogo.png') }}" alt="USC Logo">
+            </div>
+            <h1>AssemAI: Anomaly Detection Dashboard</h1>
+            <div class="logo">
+                <img src="{{ url_for('static', filename='AIISC_logo.png') }}" alt="AIISC Logo">
+            </div>
+            <div class="logo">
+                <img src="{{ url_for('static', filename='nextLogo.png') }}" alt="neXt Logo">
+            </div>
+        </div>
+    </header>
+
+    <div class="burgundy-bar">
+        <button><a style="color: white; text-decoration: none;" href="AssemAI.html">Main Page</a></button>
+        <button><a style="color: white; text-decoration: none;" href="RCA.html">Explanation Dashboard</a></button>
+    </div>
+
+    <h2>Anomaly Detection in Real-Time</h2>
+
+    <div class="main-container">
+        <div class="image-container">
+            <h3>Camera 1</h3>
+            <img id = "camera1Image" src="{{ url_for('static', filename='/BATCH1/000001_camera1.png') }}" alt="Camera 1 Image">
+            <h3>Camera 2</h3>
+            <img id = "camera2Image" src="{{ url_for('static', filename='/BATCH1/000000_camera0.png') }}" alt="Camera 2 Image">
+        </div>
+
+        <div class="result-container">
+            <div class="result-text" id="anomalyResult">Anomaly Detection Result: Awaiting Analysis...</div>
+            <div class="buttons-container">
+                <button id="startAnalyzing">Start Analyzing</button>
+                <button id="stopAnalyzing" disabled>Stop Analyzing</button>
+            </div>
+            <!-- Anomaly Type Display -->
+            <div class="anomaly-type" id="anomalyType">Anomaly Type: Not Detected</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>2024 @AssemAI</p>
+    </footer>
+
+    <script>
+        var analyzing = false;
+
+        function startAnalysis() {
+            document.getElementById('startAnalyzing').disabled = true;
+            document.getElementById('stopAnalyzing').disabled = false;
+            document.getElementById('anomalyResult').textContent = "Analyzing... Please wait.";
+            document.getElementById('anomalyType').textContent = "Anomaly Type: Detecting...";
+            analyzing = true;
+
+            // Simulate data fetching for anomaly detection
+            setTimeout(() => {
+                if (analyzing) {
+                    document.getElementById('anomalyResult').textContent = "Anomaly Detected: Check Cam1 and Cam2 Images!";
+                    document.getElementById('anomalyType').textContent = "Anomaly Type: Structural Deformation"; // Example anomaly type
+                }
+            }, 3000);
+        }
+
+        function stopAnalysis() {
+            document.getElementById('startAnalyzing').disabled = false;
+            document.getElementById('stopAnalyzing').disabled = true;
+            analyzing = false;
+            document.getElementById('anomalyResult').textContent = "Analysis Stopped.";
+            document.getElementById('anomalyType').textContent = "Anomaly Type: Not Detected";
+        }
+
+        document.getElementById('startAnalyzing').addEventListener('click', startAnalysis);
+        document.getElementById('stopAnalyzing').addEventListener('click', stopAnalysis);
+
+        function fetchData() {
+
+            fetch('/api/data')
+                .then(response => response.json())
+
+
+                .then(data => {
+                const Anomaly = data.ImageAnomalyLabel
+                document.getElementById('anomalyType').textContent = Anomaly
+                console.log(data)
+
+                // Append a timestamp to the image URLs to force reload
+                const timestamp = new Date().getTime();
+                const camera1Image = document.getElementById('camera1Image');
+                const camera2Image = document.getElementById('camera2Image');
+
+                // Assuming your image paths remain the same, only the server updates them
+                const basePath1 = '/static/BATCH1/000001_camera1.png';
+                const basePath2 = '/static/BATCH1/000000_camera0.png';
+
+                camera1Image.src = `${basePath1}?v=${timestamp}`;
+                camera2Image.src = `${basePath2}?v=${timestamp}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        document.getElementById('startAnalyzing').addEventListener('click', fetchData);
+
+    </script>
+</body>
+</html>
