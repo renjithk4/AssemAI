@@ -1,6 +1,8 @@
 # Repository for "AssemAI: Interpretable Image-Based Anomaly Prediction for Manufacturing Pipelines" Paper
 This repository contains derived datasets, implementation of methods experimented and introduced in the paper titled "AssemAI: Interpretable Image-Based Anomaly Prediction for Manufacturing Pipelines".
 
+The paper has been accepted at the **Machine Learning for Predictive Models in Engineering Applications (MLPMEA)** special session at the **International Conference on Machine Learning and Applications (ICMLA) 2024**
+
 # 1. Data Preprocessing #
 This folder includes the steps for object detection from the images in the Future Factories dataset.
 
